@@ -1,0 +1,8 @@
+<style>
+    #wind-icon {
+        display: inline-block;
+        font-size: 24px; /* Ajuste o tamanho conforme necessário */
+        transition: transform 0.5s ease-in-out; /* Suaviza a rotação */
+        transform-origin: center center; /* Define o ponto de rotação */
+    }
+</style>

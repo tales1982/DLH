@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Widget</title>
+    <script src="script.js"></script>
+    <style>
+      #wind-icon {
+        display: inline-block;
+        transition: transform 0.5s ease-in-out; /* Suaviza a rotação */
+        transform-origin: center center; /* Define o ponto de rotação */
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div class="search-form">
+        <input type="text" id="city-input" value="Luxembourg" />
+        <button id="search" onclick="search()">Search</button>
+      </div>
+      <p id="date"></p>
+      <h1 id="city"></h1>
+      <p class="temp-details">
+        <img src="" alt="" id="icon" />
+        <span id="temperature"></span>
+      </p>
+      <p id="warning"></p>
+      <p id="conditions"></p>
+      <p class="weather-details">
+        <span id="wind-icon">&#x27a4;</span>
+        <span id="wind-speed"></span>
+        <span id="wind-deg"></span>
+        <span id="pressure-icon">&#x23f2;</span>
+        <span id="pressure"></span>
+        Humidity: <span id="humidity"></span> Dew point:
+        <span id="dew-point"></span> Visibility: <span id="visibility"></span>
+      </p>
+    </main>
+  </body>
+</html>

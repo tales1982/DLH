@@ -1,0 +1,16 @@
+Date Javascript
+
+https://api.openweathermap.org/data/2.5/weather?q=luxembourg&appid=5ba27b3f3988671970ec5e23cc48f41b
+
+https://api.openweathermap.org
+|-->O endereco da api
+
+/data/2.5/
+
+weather
+
+?q=luxembourg
+|--> o id da target
+
+&appid=5ba27b3f3988671970ec5e23cc48f41b
+|--> minha chave privado da minha conta api feita no site
