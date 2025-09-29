@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparação Web3.js vs Ethers.js</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .library-section {
+            padding: 40px;
+        }
+
+        .web3-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-right: 3px solid #2196f3;
+        }
+
+        .ethers-section {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        }
+
+        .library-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .web3-title {
+            background: #2196f3;
+        }
+
+        .ethers-title {
+            background: #9c27b0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+
+        .web3-card {
+            border-left-color: #2196f3;
+        }
+
+        .ethers-card {
+            border-left-color: #9c27b0;
+        }
+
+        .feature-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            margin: 30px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .web3-cell {
+            background: #f8f9fa;
+        }
+
+        .ethers-cell {
+            background: #fafafa;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .pros, .cons {
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .pros {
+            background: #e8f5e8;
+            border-left: 5px solid #4caf50;
+        }
+
+        .cons {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+
+        .recommendation {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px;
+            text-align: center;
+        }
+
+        .recommendation h3 {
+            color: #f57c00;
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .web3-section {
+                border-right: none;
+                border-bottom: 3px solid #2196f3;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Web3.js vs Ethers.js</h1>
+            <p>Comparação abrangente das bibliotecas JavaScript para Ethereum</p>
+        </div>
+
+        <div class="comparison-grid">
+            <!-- Seção Web3.js -->
+            <div class="library-section web3-section">
+                <div class="library-title web3-title">Web3.js</div>
+                
+                <div class="feature-card web3-card">
+                    <div class="feature-title">📅 Maturidade & História</div>
+                    <p>Lançada em 2015, uma das primeiras bibliotecas para Ethereum. Ampla experiência em produção, usada por milhares de dApps.</p>
+                </div>
+
+                <div class="feature-card web3-card">
+                    <div class="feature-title">🏗️ Arquitetura</div>
+                    <p>Abordagem de instância única — um objeto web3 lida com operações de leitura e escrita. Estrutura monolítica com todas as funcionalidades empacotadas.</p>
+                </div>
+
+                <div class="feature-card web3-card">
+                    <div class="feature-title">📦 Tamanho do Bundle</div>
+                    <p>Bundle maior (~2,7MB minificado) devido ao conjunto de recursos abrangente e padrões de arquitetura mais antigos.</p>
+                </div>
+
+                <div class="feature-card web3-card">
+                    <div class="feature-title">💻 Design da API</div>
+                    <p>API tradicional baseada em callbacks que evoluiu para dar suporte a Promises. Sintaxe mais verbosa, porém familiar para muitos desenvolvedores.</p>
+                </div>
+
+                <div class="code-example">
+// Exemplo com Web3.js
+const Web3 = require('web3');
+const web3 = new Web3('https://mainnet.infura.io/v3/KEY');
+
+// Obter saldo
+const balance = await web3.eth.getBalance(address);
+const ethBalance = web3.utils.fromWei(balance, 'ether');
+
+// Enviar transação
+const tx = {
+  from: account,
+  to: recipient,
+  value: web3.utils.toWei('1', 'ether')
+};
+const txHash = await web3.eth.sendTransaction(tx);
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Vantagens</h4>
+                        <ul>
+                            <li>Documentação extensa</li>
+                            <li>Grande suporte da comunidade</li>
+                            <li>Conjunto de recursos abrangente</li>
+                            <li>Estabilidade de longo prazo</li>
+                            <li>Ampla adoção na indústria</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Limitações</h4>
+                        <ul>
+                            <li>Bundle maior</li>
+                            <li>Arquitetura menos modular</li>
+                            <li>Sintaxe de API mais verbosa</li>
+                            <li>Padrões de código legados</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Ethers.js -->
+            <div class="library-section ethers-section">
+                <div class="library-title ethers-title">Ethers.js</div>
+                
+                <div class="feature-card ethers-card">
+                    <div class="feature-title">🆕 Design Moderno</div>
+                    <p>Construída do zero em 2016 com padrões modernos de JavaScript. Abordagem TypeScript-first e recursos ES6+.</p>
+                </div>
+
+                <div class="feature-card ethers-card">
+                    <div class="feature-title">🔧 Arquitetura</div>
+                    <p>Design modular com separação clara: Providers (somente leitura) e Signers (operações de escrita). Camadas de abstração limpas.</p>
+                </div>
+
+                <div class="feature-card ethers-card">
+                    <div class="feature-title">📦 Tamanho do Bundle</div>
+                    <p>Bundle menor (~1,1MB minificado) graças à arquitetura modular. Importe apenas o necessário para desempenho ideal.</p>
+                </div>
+
+                <div class="feature-card ethers-card">
+                    <div class="feature-title">💻 Design da API</div>
+                    <p>API limpa e intuitiva com design baseado em Promises. Formato de ABI legível por humanos e melhor tratamento de erros.</p>
+                </div>
+
+                <div class="code-example">
+// Exemplo com Ethers.js
+const { ethers } = require('ethers');
+const provider = new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/KEY');
+
+// Obter saldo
+const balance = await provider.getBalance(address);
+const ethBalance = ethers.utils.formatEther(balance);
+
+// Enviar transação (com signer)
+const signer = new ethers.Wallet(privateKey, provider);
+const tx = await signer.sendTransaction({
+  to: recipient,
+  value: ethers.utils.parseEther('1.0')
+});
+                </div>
+
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h4>✅ Vantagens</h4>
+                        <ul>
+                            <li>Bundle menor</li>
+                            <li>API moderna e limpa</li>
+                            <li>Excelente suporte a TypeScript</li>
+                            <li>Arquitetura modular</li>
+                            <li>Melhor tratamento de erros</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>❌ Limitações</h4>
+                        <ul>
+                            <li>Comunidade menor</li>
+                            <li>Menos documentação</li>
+                            <li>Mais nova, menos “battle-tested”</li>
+                            <li>Curva de aprendizado mais íngreme</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-table">
+            <table>
+                <tr>
+                    <th>Recurso</th>
+                    <th>Web3.js</th>
+                    <th>Ethers.js</th>
+                </tr>
+                <tr>
+                    <td><strong>Primeiro Lançamento</strong></td>
+                    <td class="web3-cell">2015</td>
+                    <td class="ethers-cell">2016</td>
+                </tr>
+                <tr>
+                    <td><strong>Tamanho do Bundle</strong></td>
+                    <td class="web3-cell">~2,7MB (minificado)</td>
+                    <td class="ethers-cell">~1,1MB (minificado)</td>
+                </tr>
+                <tr>
+                    <td><strong>Suporte a TypeScript</strong></td>
+                    <td class="web3-cell">Adicionado depois, types da comunidade</td>
+                    <td class="ethers-cell">Embutido, abordagem TypeScript-first</td>
+                </tr>
+                <tr>
+                    <td><strong>Arquitetura</strong></td>
+                    <td class="web3-cell">Monolítica, instância única</td>
+                    <td class="ethers-cell">Modular, padrão Provider/Signer</td>
+                </tr>
+                <tr>
+                    <td><strong>Curva de Aprendizado</strong></td>
+                    <td class="web3-cell">Mais fácil para iniciantes</td>
+                    <td class="ethers-cell">Mais íngreme, porém mais lógica</td>
+                </tr>
+                <tr>
+                    <td><strong>Documentação</strong></td>
+                    <td class="web3-cell">Extensa, muitos tutoriais</td>
+                    <td class="ethers-cell">Boa, porém menos conteúdo comunitário</td>
+                </tr>
+                <tr>
+                    <td><strong>Tratamento de Erros</strong></td>
+                    <td class="web3-cell">Mensagens básicas</td>
+                    <td class="ethers-cell">Erros detalhados e legíveis</td>
+                </tr>
+                <tr>
+                    <td><strong>Suporte a ENS</strong></td>
+                    <td class="web3-cell">Via plugins</td>
+                    <td class="ethers-cell">Nativo</td>
+                </tr>
+                <tr>
+                    <td><strong>Ferramentas de Teste</strong></td>
+                    <td class="web3-cell">Ferramentas separadas (Truffle, Hardhat)</td>
+                    <td class="ethers-cell">Utilitários de teste integrados</td>
+                </tr>
+                <tr>
+                    <td><strong>Desempenho</strong></td>
+                    <td class="web3-cell">Bom, mas com overhead maior</td>
+                    <td class="ethers-cell">Melhor, otimizada para JS moderno</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="recommendation">
+            <h3>🎯 Qual escolher?</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; text-align: left;">
+                <div>
+                    <h4 style="color: #2196f3;">Escolha Web3.js se:</h4>
+                    <ul>
+                        <li>Você é iniciante em desenvolvimento blockchain</li>
+                        <li>Está trabalhando em um projeto com base de código Web3.js já existente</li>
+                        <li>Precisa de muitos recursos e tutoriais da comunidade</li>
+                        <li>Constrói aplicações corporativas que pedem estabilidade máxima</li>
+                        <li>Trabalha com sistemas legados ou padrões JS mais antigos</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: #9c27b0;">Escolha Ethers.js se:</h4>
+                    <ul>
+                        <li>Vai iniciar um projeto do zero</li>
+                        <li>Tamanho do bundle e desempenho são críticos</li>
+                        <li>Usa TypeScript ou frameworks modernos</li>
+                        <li>Quer um código mais limpo e manutenível</li>
+                        <li>Constrói apps onde segurança é prioridade</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; padding: 20px; background: #e3f2fd; border-radius: 8px;">
+                <strong>💡 Recomendações de Treinamento:</strong> Este curso foca em <strong>Web3.js</strong> por ser mais amigável para iniciantes, ter muitos recursos de aprendizagem e ampla adoção. Depois de dominar os conceitos com Web3.js, migrar para Ethers.js fica bem mais fácil.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

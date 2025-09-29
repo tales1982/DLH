@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tokenization Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            margin: 30px 0 20px 0;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .question {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .question.answered-correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+        }
+
+        .question.answered-incorrect {
+            border-color: #e74c3c;
+            background: #fdeaea;
+        }
+
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background: #f8f9ff;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #fdeaea;
+            color: #e74c3c;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 25px;
+        }
+
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+        }
+
+        .info-panel.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .info-icon {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .info-icon:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .info-panel h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .info-panel p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .score-feedback {
+            font-size: 1.2em;
+            margin-top: 15px;
+        }
+
+        .reset-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .info-panel {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tokenization Training Quiz</h1>
+        <p class="subtitle">Test your knowledge on tokenization fundamentals and implementation</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="score-display" id="scoreDisplay">
+            <h2>Quiz Complete!</h2>
+            <div class="score-number" id="finalScore">0%</div>
+            <div class="score-feedback" id="scoreFeedback"></div>
+            <button class="reset-btn" onclick="resetQuiz()">Retake Quiz</button>
+        </div>
+
+        <div id="quizContainer"></div>
+    </div>
+
+    <div class="info-icon" id="infoIcon" onclick="toggleInfoPanel()">i</div>
+    <div class="info-panel" id="infoPanel"></div>
+
+    <script>
+        const quizData = [
+            // Session I Questions - All 25 questions
+            {
+                session: "Session I: Tokenization Fundamentals",
+                questions: [
+                    {
+                        question: "What is tokenization?",
+                        options: [
+                            "Converting digital assets to physical form",
+                            "Converting real-world assets into digital tokens on a blockchain",
+                            "Creating new cryptocurrencies",
+                            "Digitizing paper documents"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Understanding Tokenization",
+                            content: "Tokenization is the foundational process of the digital asset revolution. It creates programmable, verifiable, and liquid representations of real-world assets. This process democratizes access to traditionally illiquid investments by allowing fractional ownership. For example, a €1 million property can be divided into 1,000 tokens worth €1,000 each, making luxury real estate accessible to smaller investors."
+                        }
+                    },
+                    {
+                        question: "Which characteristic is NOT a benefit of blockchain for tokenization?",
+                        options: [
+                            "Immutability",
+                            "Decentralization",
+                            "High energy consumption",
+                            "Transparency"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "Blockchain Benefits vs. Drawbacks",
+                            content: "While blockchain provides immutability, decentralization, and transparency for tokenization, high energy consumption remains a significant challenge, particularly for Proof-of-Work networks like Bitcoin. However, newer consensus mechanisms like Proof-of-Stake (used by Ethereum 2.0) have dramatically reduced energy consumption while maintaining security and decentralization benefits."
+                        }
+                    },
+                    {
+                        question: "Smart contracts are:",
+                        options: [
+                            "Legal agreements written by lawyers",
+                            "Self-executing contracts with terms written in code",
+                            "Traditional paper contracts",
+                            "Insurance policies"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Smart Contracts in Tokenization",
+                            content: "Smart contracts are the backbone of tokenization, automatically enforcing rules and executing transactions without human intervention. In tokenization, they handle complex operations like dividend distributions, compliance checking, and transfer restrictions. For instance, a real estate token's smart contract can automatically distribute monthly rental income to all token holders proportionally to their ownership stakes."
+                        }
+                    },
+                    {
+                        question: "What does 'fractional ownership' mean in tokenization?",
+                        options: [
+                            "Owning broken pieces of an asset",
+                            "Dividing high-value assets into smaller, affordable units",
+                            "Partial legal ownership",
+                            "Temporary ownership rights"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Fractional Ownership Revolution",
+                            content: "Fractional ownership through tokenization breaks down traditional investment barriers. A €5 million commercial building can be divided into 5,000 tokens worth €1,000 each. This allows regular investors to own a piece of premium real estate, receive proportional rental income, and benefit from property appreciation - opportunities previously reserved for wealthy individuals or institutions."
+                        }
+                    },
+                    {
+                        question: "Which is NOT a key benefit of tokenization?",
+                        options: [
+                            "Enhanced liquidity",
+                            "Reduced transaction costs",
+                            "Increased complexity",
+                            "Global accessibility"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "Tokenization Benefits",
+                            content: "Tokenization simplifies rather than complicates asset management by automating processes through smart contracts. Key benefits include enhanced liquidity for traditionally illiquid assets, reduced transaction costs through disintermediation, global 24/7 accessibility, and programmable compliance. These improvements make previously complex asset management more streamlined and accessible to broader investor bases."
+                        }
+                    },
+                    {
+                        question: "DeFi stands for:",
+                        options: [
+                            "Digital Finance",
+                            "Decentralized Finance",
+                            "Direct Finance",
+                            "Distributed Finance"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Decentralized Finance Ecosystem",
+                            content: "DeFi represents a paradigm shift from traditional financial intermediaries to automated, blockchain-based financial services. It enables lending, borrowing, trading, and yield generation without banks or traditional institutions. Tokenized assets can integrate with DeFi protocols, allowing property tokens to serve as collateral for loans or participate in liquidity pools for additional yield generation."
+                        }
+                    },
+                    {
+                        question: "What makes tokens 'programmable assets'?",
+                        options: [
+                            "They can be coded by programmers",
+                            "They have embedded logic in smart contracts",
+                            "They work with computer programs",
+                            "They can be programmed to self-destruct"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Programmable Asset Features",
+                            content: "Programmable assets contain embedded business logic that automates functions like compliance checking, dividend distributions, voting mechanisms, and transfer restrictions. Unlike traditional assets requiring manual intervention, tokenized assets can automatically execute predefined rules. For example, a tokenized bond can automatically pay interest, enforce holding periods, and execute buyback provisions based on market conditions."
+                        }
+                    },
+                    {
+                        question: "Liquidity in tokenization refers to:",
+                        options: [
+                            "The physical liquid state of assets",
+                            "How easily an asset can be converted to cash",
+                            "The moisture content of tokens",
+                            "The clarity of blockchain transactions"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Liquidity Transformation",
+                            content: "Tokenization transforms illiquid assets into liquid ones by creating tradeable digital representations. Traditional real estate might take months to sell, but fractional real estate tokens can be traded 24/7 on digital exchanges. This liquidity premium often increases asset values, as investors pay more for assets they can easily exit, fundamentally changing how we value traditionally illiquid investments."
+                        }
+                    },
+                    {
+                        question: "ERC-20 tokens are:",
+                        options: [
+                            "Non-fungible tokens",
+                            "Fungible tokens where each unit is identical",
+                            "Semi-fungible tokens",
+                            "Security tokens only"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "ERC-20: The Fungible Token Standard",
+                            content: "ERC-20 defines the rules for fungible tokens on Ethereum, where each token is identical and interchangeable. This standard enables seamless integration with wallets, exchanges, and DeFi protocols. Common applications include stablecoins (USDC, USDT), utility tokens for platform access, and tokenized commodities like gold-backed tokens where each unit represents the same amount of the underlying asset."
+                        }
+                    },
+                    {
+                        question: "Which function returns the total number of ERC-20 tokens in existence?",
+                        options: [
+                            "balanceOf()",
+                            "transfer()",
+                            "totalSupply()",
+                            "approve()"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "ERC-20 Core Functions",
+                            content: "The totalSupply() function provides transparency by showing the total number of tokens that exist for a particular contract. This is crucial for understanding token scarcity and calculating market capitalization. For tokenized assets, it shows the total number of fractional ownership units available, helping investors understand their proportional stake in the underlying asset."
+                        }
+                    },
+                    {
+                        question: "ERC-721 tokens are best suited for:",
+                        options: [
+                            "Cryptocurrencies",
+                            "Unique assets like real estate or art",
+                            "Loyalty points",
+                            "Stablecoins"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "ERC-721: Unique Asset Representation",
+                            content: "ERC-721 enables the tokenization of unique assets where each token represents a distinct item. Each NFT has a unique identifier and can contain rich metadata. In real estate, each property token contains specific information like address, square footage, valuation, and legal documents. This standard is perfect for assets where individual characteristics matter and cannot be interchanged."
+                        }
+                    },
+                    {
+                        question: "What does the tokenURI() function in ERC-721 provide?",
+                        options: [
+                            "The token's price",
+                            "A link to metadata about the token",
+                            "The owner's address",
+                            "The token's age"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "NFT Metadata System",
+                            content: "The tokenURI() function links to a JSON file containing comprehensive information about the NFT, including name, description, image, and properties. For real estate NFTs, this might include property photos, legal documents, inspection reports, and historical transaction data. This metadata is often stored on IPFS for decentralization, ensuring the information remains accessible and tamper-proof."
+                        }
+                    },
+                    {
+                        question: "ERC-1155 is called the 'multi-token standard' because:",
+                        options: [
+                            "It costs multiple tokens to use",
+                            "It can handle multiple token types in one contract",
+                            "It requires multiple approvals",
+                            "It works across multiple blockchains"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "ERC-1155: Efficient Multi-Token Management",
+                            content: "ERC-1155 revolutionizes efficiency by managing multiple token types in a single contract. A gaming platform can handle currencies, unique weapons, and consumable items all in one contract, reducing gas costs by up to 90%. This standard combines the functionality of ERC-20 (fungible) and ERC-721 (non-fungible) tokens, making it ideal for complex ecosystems requiring various asset types."
+                        }
+                    },
+                    {
+                        question: "ERC-1400 is specifically designed for:",
+                        options: [
+                            "Gaming tokens",
+                            "Art NFTs",
+                            "Security tokens requiring compliance",
+                            "Utility tokens"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "ERC-1400: Regulatory Compliance Built-In",
+                            content: "ERC-1400 addresses the complex regulatory requirements of traditional securities. It includes features like transfer restrictions (only accredited investors), document management (linking to prospectuses and legal docs), and forced transfer capabilities for compliance situations. This standard ensures that tokenized securities can comply with existing financial regulations while leveraging blockchain benefits."
+                        }
+                    },
+                    {
+                        question: "The T-REX protocol (ERC-3643) includes:",
+                        options: [
+                            "Gaming mechanics",
+                            "On-chain KYC/AML verification",
+                            "Art authentication",
+                            "Music streaming"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "T-REX: Advanced Compliance Framework",
+                            content: "Developed by Tokeny Solutions in Luxembourg, T-REX provides the most sophisticated compliance system for tokenized securities. It features on-chain identity verification, modular compliance rules that adapt to different jurisdictions, and real-time compliance checking. The protocol has been successfully used for actual security token offerings in Europe, demonstrating its practical regulatory compliance capabilities."
+                        }
+                    },
+                    {
+                        question: "Which standard would be best for tokenizing shares in a regulated company?",
+                        options: [
+                            "ERC-20",
+                            "ERC-721",
+                            "ERC-1400 or ERC-3643",
+                            "ERC-1155"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "Security Token Standards",
+                            content: "Regulated company shares require compliance with securities laws, making ERC-1400 or ERC-3643 essential. These standards include built-in compliance features like investor accreditation checks, transfer restrictions, regulatory reporting, and document management. Simple ERC-20 tokens lack these regulatory features and would not meet legal requirements for security offerings."
+                        }
+                    },
+                    {
+                        question: "Semi-fungible tokens (ERC-1155) are useful for:",
+                        options: [
+                            "Event tickets that become seat-specific",
+                            "Pure cryptocurrencies",
+                            "One-of-a-kind art pieces",
+                            "Simple loyalty points"
+                        ],
+                        correct: 0,
+                        info: {
+                            title: "Semi-Fungible Token Applications",
+                            content: "Semi-fungible tokens start as interchangeable (fungible) but can become unique (non-fungible) under certain conditions. Event tickets are perfect examples: initially, all general admission tickets are identical, but once assigned to specific seats, they become unique. This flexibility makes ERC-1155 ideal for scenarios requiring both fungible and non-fungible characteristics in the same system."
+                        }
+                    },
+                    {
+                        question: "MiCA regulation primarily covers:",
+                        options: [
+                            "Traditional securities only",
+                            "Crypto-assets in the EU",
+                            "US cryptocurrency laws",
+                            "Asian digital assets"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "MiCA Regulation Framework",
+                            content: "Markets in Crypto-Assets (MiCA) is the EU's comprehensive regulatory framework for crypto-assets, establishing uniform rules across all EU member states. It covers authorization requirements, operational standards, consumer protection measures, and market integrity rules. MiCA creates regulatory certainty for tokenization projects, enabling compliant operations across the European market while protecting investors."
+                        }
+                    },
+                    {
+                        question: "Luxembourg's DLT Law allows for:",
+                        options: [
+                            "Tax-free cryptocurrency trading",
+                            "Issuance and circulation of securities using DLT",
+                            "Unlimited token creation",
+                            "Bypassing EU regulations"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Luxembourg DLT Law Innovation",
+                            content: "Luxembourg's 2021 DLT Law provides legal certainty for distributed ledger technology use in securities issuance and circulation. It allows traditional securities to be issued, held, and transferred on blockchain networks while maintaining the same legal status as conventional securities. This pioneering legislation positions Luxembourg as a leader in compliant blockchain finance within the EU framework."
+                        }
+                    },
+                    {
+                        question: "KYC stands for:",
+                        options: [
+                            "Keep Your Coins",
+                            "Know Your Customer",
+                            "Key Your Contracts",
+                            "Kill Your Competition"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "KYC in Tokenization",
+                            content: "Know Your Customer (KYC) requirements mandate verifying investor identities, source of funds, and ongoing monitoring for suspicious activities. In tokenization, advanced protocols like T-REX integrate KYC directly into smart contracts, automatically verifying investor eligibility before allowing token transfers. This automation reduces compliance costs while ensuring regulatory adherence."
+                        }
+                    },
+                    {
+                        question: "GDPR affects tokenization by:",
+                        options: [
+                            "Requiring all data to be on-chain",
+                            "Prohibiting blockchain use",
+                            "Creating challenges for storing personal data on immutable blockchains",
+                            "Mandating token taxation"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "GDPR and Blockchain Compatibility",
+                            content: "The 'right to be forgotten' under GDPR conflicts with blockchain's immutability, creating technical challenges for tokenization platforms. Solutions typically involve storing only wallet addresses and encrypted references on-chain while maintaining personal data off-chain with appropriate privacy protections. This hybrid approach enables GDPR compliance while preserving blockchain benefits."
+                        }
+                    },
+                    {
+                        question: "Why might a tokenization project need regulatory approval?",
+                        options: [
+                            "All tokens are automatically securities",
+                            "If tokens represent securities or investment contracts",
+                            "Only if tokens are worth over €1 million",
+                            "Blockchain requires government permission"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Securities Classification",
+                            content: "Not all tokens are securities, but those representing investment contracts, profit-sharing arrangements, or ownership stakes typically require regulatory approval. The classification depends on factors like investor expectations of profits from others' efforts, promised returns, and the nature of rights granted. Utility tokens providing access to services generally don't require securities registration."
+                        }
+                    },
+                    {
+                        question: "AML (Anti-Money Laundering) requirements in tokenization include:",
+                        options: [
+                            "Accepting only cash payments",
+                            "Verifying source of funds and ongoing monitoring",
+                            "Limiting token supply",
+                            "Using only Bitcoin"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "AML in Digital Assets",
+                            content: "Anti-Money Laundering requirements for tokenization include verifying the source of investor funds, ongoing transaction monitoring for suspicious patterns, reporting large transactions to authorities, and maintaining detailed audit trails. Advanced tokenization platforms integrate these checks into smart contracts, automatically flagging unusual activity and ensuring compliance with international AML standards."
+                        }
+                    },
+                    {
+                        question: "The 'right to be forgotten' under GDPR is challenging for blockchain because:",
+                        options: [
+                            "Blockchains are immutable by design",
+                            "Tokens expire automatically",
+                            "Personal data is always encrypted",
+                            "Only governments can access blockchain data"
+                        ],
+                        correct: 0,
+                        info: {
+                            title: "Immutability vs. Privacy Rights",
+                            content: "Blockchain's core feature of immutability directly conflicts with GDPR's right to be forgotten, which allows individuals to request deletion of their personal data. This fundamental tension requires careful architectural decisions, typically involving off-chain personal data storage with on-chain references, zero-knowledge proofs, or permissioned blockchain networks where data can be modified under specific circumstances."
+                        }
+                    },
+                    {
+                        question: "Luxembourg is attractive for tokenization because:",
+                        options: [
+                            "It has no regulations",
+                            "Progressive DLT legislation and established financial infrastructure",
+                            "Cryptocurrency mining is free",
+                            "All tokens are tax-free"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Luxembourg: European Tokenization Hub",
+                            content: "Luxembourg combines regulatory clarity with financial expertise, hosting 40% of European investment funds (€5.2 trillion AUM). The 2021 DLT Law provides legal certainty for tokenized securities, while the CSSF offers regulatory sandboxes for innovation. This ecosystem attracts international projects seeking compliant tokenization solutions with access to European markets and established financial infrastructure."
+                        }
+                    }
+                ]
+            },
+            // Session II Questions
+            {
+                session: "Session II: Programmability and Implementation",
+                questions: [
+                    {
+                        question: "MetaMask is:",
+                        options: [
+                            "A blockchain itself",
+                            "A cryptocurrency wallet and browser extension",
+                            "A programming language",
+                            "A token standard"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "MetaMask: Gateway to Web3",
+                            content: "MetaMask serves as the bridge between traditional web browsers and blockchain networks. It securely stores private keys, manages multiple wallet addresses, and enables interaction with decentralized applications. For tokenization development, MetaMask connects your browser to test networks like Sepolia, allowing you to deploy and test smart contracts without spending real money while maintaining the same security and functionality as mainnet."
+                        }
+                    },
+                    {
+                        question: "Remix IDE is used for:",
+                        options: [
+                            "Creating music tracks",
+                            "Writing and deploying smart contracts",
+                            "Trading cryptocurrencies",
+                            "Mining blockchain blocks"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Remix IDE: Smart Contract Development",
+                            content: "Remix provides a complete development environment for smart contracts, featuring syntax highlighting, debugging tools, and integrated deployment capabilities. It compiles Solidity code, estimates gas costs, and provides detailed transaction information. For tokenization projects, Remix allows you to develop, test, and deploy ERC-20, ERC-721, and other token standards with full visibility into contract interactions and state changes."
+                        }
+                    },
+                    {
+                        question: "In the LuxembourgGoldToken contract, what does the mint() function do?",
+                        options: [
+                            "Creates new tokens and increases gold reserves",
+                            "Destroys existing tokens",
+                            "Transfers tokens between addresses",
+                            "Changes token metadata"
+                        ],
+                        correct: 0,
+                        info: {
+                            title: "Tokenized Gold: Mint Function",
+                            content: "The mint() function in a gold-backed token creates new tokens only when physical gold is deposited and verified. This maintains the 1:1 backing ratio between digital tokens and physical reserves. The function is restricted to authorized personnel (onlyOwner modifier) and simultaneously increases both the token supply and the recorded gold reserves, ensuring transparency and maintaining trust in the tokenization system."
+                        }
+                    },
+                    {
+                        question: "The 'onlyOwner' modifier means:",
+                        options: [
+                            "Anyone can call the function",
+                            "Only the contract owner can call the function",
+                            "Only token holders can call the function",
+                            "Only approved addresses can call the function"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Access Control in Smart Contracts",
+                            content: "The onlyOwner modifier implements crucial access control, ensuring that sensitive functions like minting tokens or updating contract parameters can only be executed by authorized addresses. This prevents unauthorized token creation, protects against malicious attacks, and maintains the integrity of tokenized assets. In real-world tokenization, this might restrict property verification to certified appraisers or limit fund management to licensed operators."
+                        }
+                    },
+                    {
+                        question: "In the Real Estate NFT contract, what information is stored in the Property struct?",
+                        options: [
+                            "Only the property address",
+                            "Address, area, valuation, type, verification status, and creation time",
+                            "Just the property price",
+                            "Only the owner's information"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Comprehensive Property Data Structure",
+                            content: "The Property struct captures essential real estate information: physical address for location identification, area in square meters for size verification, valuation in EUR for financial records, property type (residential/commercial/industrial) for categorization, verification status to confirm professional appraisal, and creation timestamp for audit trails. This comprehensive data structure ensures each tokenized property contains all necessary information for investment decisions and regulatory compliance."
+                        }
+                    },
+                    {
+                        question: "What is the purpose of verified appraisers in the real estate contract?",
+                        options: [
+                            "To mint new properties",
+                            "To transfer ownership",
+                            "To verify property authenticity and valuation",
+                            "To burn property tokens"
+                        ],
+                        correct: 2,
+                        info: {
+                            title: "Professional Verification System",
+                            content: "Verified appraisers provide crucial third-party validation in real estate tokenization. Only licensed professionals can mark properties as 'verified,' ensuring accurate valuations and legitimate ownership claims. This system prevents fraudulent property listings and gives investors confidence in the underlying assets. The verification process might include on-site inspections, title searches, and market analysis, creating a trustworthy bridge between physical real estate and digital tokens."
+                        }
+                    },
+                    {
+                        question: "In the Fractionalized Real Estate contract, what does depositRentalIncome() do?",
+                        options: [
+                            "Withdraws money from the contract",
+                            "Allows the owner to deposit rental income for distribution",
+                            "Calculates property taxes",
+                            "Updates property valuation"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Automated Income Distribution",
+                            content: "The depositRentalIncome() function enables property managers to deposit rental payments into the smart contract for automatic distribution to token holders. When €8,000 monthly rent is deposited, the contract calculates each investor's proportional share based on their token holdings. This automation eliminates manual distribution processes, reduces costs, and ensures transparent, proportional income sharing among all fractional owners."
+                        }
+                    },
+                    {
+                        question: "The claimDividends() function:",
+                        options: [
+                            "Automatically distributes income to all holders",
+                            "Allows individual shareholders to claim their portion of rental income",
+                            "Burns dividend tokens",
+                            "Creates new dividend tokens"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Investor-Controlled Dividend Claims",
+                            content: "The claimDividends() function empowers individual investors to claim their earned rental income when convenient for them. Rather than automatic distributions, this approach gives investors control over timing, which can be important for tax planning. The function calculates dividends based on token holdings, prevents double-claiming, and includes security measures like reentrancy protection to safeguard funds during the claim process."
+                        }
+                    },
+                    {
+                        question: "The nonReentrant modifier prevents:",
+                        options: [
+                            "Multiple inheritance",
+                            "Recursive calls that could drain contract funds",
+                            "Token transfers",
+                            "Metadata updates"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Smart Contract Security Measures",
+                            content: "The nonReentrant modifier protects against reentrancy attacks, where malicious contracts exploit function calls to repeatedly withdraw funds before balances are updated. This is crucial in financial functions like dividend claims or token burns. The modifier uses a state variable to detect if a function is already executing and reverts if called recursively, preventing one of the most common and dangerous smart contract vulnerabilities."
+                        }
+                    },
+                    {
+                        question: "Smart contracts can automate:",
+                        options: [
+                            "Property maintenance",
+                            "Dividend distributions and compliance checking",
+                            "Property construction",
+                            "Market price setting"
+                        ],
+                        correct: 1,
+                        info: {
+                            title: "Financial Automation in Tokenization",
+                            content: "Smart contracts excel at automating financial and compliance operations in tokenization. They can distribute dividends proportionally, enforce transfer restrictions based on investor accreditation, automatically withhold taxes based on jurisdiction, and execute governance votes. While they cannot perform physical tasks like maintenance or construction, they create unprecedented efficiency in financial operations, reducing costs and eliminating human error in complex calculations and compliance procedures."
+                        }
+                    }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let totalQuestions = 0;
+        let correctAnswers = 0;
+        let userAnswers = [];
+        let flattenedQuestions = [];
+
+        // Flatten questions for easier navigation
+        function initializeQuiz() {
+            flattenedQuestions = [];
+            quizData.forEach((session, sessionIndex) => {
+                session.questions.forEach((q, qIndex) => {
+                    flattenedQuestions.push({
+                        ...q,
+                        sessionName: session.session,
+                        sessionIndex,
+                        questionIndex: qIndex
+                    });
+                });
+            });
+            totalQuestions = flattenedQuestions.length;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            let currentSession = '';
+            flattenedQuestions.forEach((question, index) => {
+                if (question.sessionName !== currentSession) {
+                    currentSession = question.sessionName;
+                    const sessionHeader = document.createElement('div');
+                    sessionHeader.className = 'session-header';
+                    sessionHeader.textContent = currentSession;
+                    container.appendChild(sessionHeader);
+                }
+
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.id = `question-${index}`;
+                
+                const questionTitle = document.createElement('h3');
+                questionTitle.textContent = `Q${index + 1}: ${question.question}`;
+                questionDiv.appendChild(questionTitle);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+
+                question.options.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.onclick = () => selectAnswer(index, optionIndex);
+                    
+                    optionDiv.innerHTML = `
+                        <span class="option-letter">${String.fromCharCode(65 + optionIndex)})</span>
+                        <span>${option}</span>
+                    `;
+                    
+                    optionsDiv.appendChild(optionDiv);
+                });
+
+                questionDiv.appendChild(optionsDiv);
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, selectedOption) {
+            const question = flattenedQuestions[questionIndex];
+            const questionDiv = document.getElementById(`question-${questionIndex}`);
+            const options = questionDiv.querySelectorAll('.option');
+            
+            // Store user answer
+            userAnswers[questionIndex] = selectedOption;
+            
+            // Clear previous selections
+            options.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Mark selected option
+            options[selectedOption].classList.add('selected');
+            
+            // Show correct/incorrect immediately
+            if (selectedOption === question.correct) {
+                options[selectedOption].classList.add('correct');
+                questionDiv.classList.add('answered-correct');
+                correctAnswers++;
+            } else {
+                options[selectedOption].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                questionDiv.classList.add('answered-incorrect');
+            }
+            
+            // Show info panel
+            showInfoPanel(question.info);
+            
+            // Update progress
+            updateProgress();
+            
+            // Check if quiz is complete
+            if (userAnswers.filter(a => a !== undefined).length === totalQuestions) {
+                showFinalScore();
+            }
+        }
+
+        function showInfoPanel(info) {
+            const panel = document.getElementById('infoPanel');
+            panel.innerHTML = `
+                <h4>${info.title}</h4>
+                <p>${info.content}</p>
+            `;
+            panel.classList.add('show');
+        }
+
+        function toggleInfoPanel() {
+            const panel = document.getElementById('infoPanel');
+            panel.classList.toggle('show');
+        }
+
+        function updateProgress() {
+            const answeredCount = userAnswers.filter(a => a !== undefined).length;
+            const progress = (answeredCount / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function showFinalScore() {
+            const scorePercentage = Math.round((correctAnswers / totalQuestions) * 100);
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const finalScore = document.getElementById('finalScore');
+            const scoreFeedback = document.getElementById('scoreFeedback');
+            
+            finalScore.textContent = `${scorePercentage}%`;
+            
+            let feedback = '';
+            if (scorePercentage >= 90) {
+                feedback = 'Outstanding! You have excellent knowledge of tokenization concepts.';
+            } else if (scorePercentage >= 80) {
+                feedback = 'Great job! You have a solid understanding of tokenization.';
+            } else if (scorePercentage >= 70) {
+                feedback = 'Good work! Consider reviewing some concepts for deeper understanding.';
+            } else if (scorePercentage >= 60) {
+                feedback = 'Fair performance. More study of the fundamentals would be beneficial.';
+            } else {
+                feedback = 'Additional study recommended. Review the training materials and retake the quiz.';
+            }
+            
+            scoreFeedback.textContent = `${correctAnswers}/${totalQuestions} correct. ${feedback}`;
+            scoreDisplay.classList.add('show');
+            
+            // Scroll to score display
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            userAnswers = [];
+            
+            document.getElementById('scoreDisplay').classList.remove('show');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('infoPanel').classList.remove('show');
+            
+            // Clear all question states
+            const questions = document.querySelectorAll('.question');
+            questions.forEach(q => {
+                q.classList.remove('answered-correct', 'answered-incorrect');
+                const options = q.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', initializeQuiz);
+
+        // Close info panel when clicking outside
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('infoPanel');
+            const icon = document.getElementById('infoIcon');
+            
+            if (!panel.contains(event.target) && !icon.contains(event.target)) {
+                panel.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

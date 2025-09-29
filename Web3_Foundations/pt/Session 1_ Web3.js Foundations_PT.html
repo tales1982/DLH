@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 & Desenvolvimento de dApps - Sessão 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            padding: 40px;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin: 25px 0 15px 0;
+            border-left: 5px solid #764ba2;
+            padding-left: 15px;
+        }
+
+        .slide h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 20px 0 10px 0;
+        }
+
+        .slide h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 15px 0 8px 0;
+        }
+
+        .slide p, .slide li {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .slide ul {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .slide li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .equation-box {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .column {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-item {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            margin: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .flow-arrow {
+            font-size: 1.5em;
+            color: #764ba2;
+            margin: 0 10px;
+        }
+
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .component-box {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .smart-contract-box {
+            background: #2c3e50;
+        }
+
+        .client-box {
+            background: #27ae60;
+        }
+
+        .blockchain-box {
+            background: #f39c12;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .provider-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .provider-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .provider-card h4 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .navigation {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .nav-button:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            .presentation-container {
+                padding: 10px;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+            
+            .slide h1 {
+                font-size: 2em;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .navigation {
+                position: relative;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--
+    <div class="navigation">
+        <button class="nav-button" onclick="scrollToSlide('slide1')">Introdução</button>
+        <button class="nav-button" onclick="scrollToSlide('slide2')">Estrutura da dApp</button>
+        <button class="nav-button" onclick="scrollToSlide('slide3')">Comunicação</button>
+        <button class="nav-button" onclick="scrollToSlide('slide4')">JSON-RPC</button>
+        <button class="nav-button" onclick="scrollToSlide('slide5')">Web3.js</button>
+    </div>
+-->
+    <div class="presentation-container">
+        <!-- Slide 1: Introdução -->
+        <div class="slide" id="slide1">
+        <h1>Web3: Fundamentos e Configuração</h1>
+            <div class="highlight-box">
+                <h3>Objetivo: </h3> <p>Estabelecer os fundamentos de Web3, configurar o ambiente de desenvolvimento e criar a primeira conexão com a blockchain.</p>
+                
+                <h3>Projeto Prático: </h3><p> Conexão com provedor Web3, contas, blocos e verificador de saldo etc. </p>
+               
+            </div>
+
+        </div>
+        <div class="slide" id="slide1">
+            <h1>Desenvolvendo com Ethereum (dApp)</h1>
+            
+            <div class="highlight-box">
+                <h3>O que é uma Aplicação Descentralizada (dApp)?</h3>
+                <p>Uma aplicação descentralizada (dApp) é um tipo de software que existe e roda em uma blockchain usando comunicação ponto a ponto. O “backend” roda em muitos “nós” distribuídos em vez de um único servidor centralizado.</p>
+            </div>
+
+            <h2>Arquitetura Web2 Tradicional vs Web3</h2>
+            
+            <div class="two-column">
+                <div class="column">
+                    <h4>Web2 (Internet Atual)</h4>
+                    <ul>
+                        <li>Servidores centralizados</li>
+                        <li>Dados pertencem às plataformas</li>
+                        <li>Usuários são o produto</li>
+                        <li>Pontos únicos de falha</li>
+                        <li>Possibilidade de censura</li>
+                        <li>APIs controladas por empresas</li>
+                    </ul>
+                    <p><strong>Exemplos:</strong> Facebook, Google, Amazon</p>
+                </div>
+                
+                <div class="column">
+                    <h4>Web3 (Web Descentralizada)</h4>
+                    <ul>
+                        <li>Redes distribuídas</li>
+                        <li>Usuários possuem seus dados</li>
+                        <li>Dinheiro programável</li>
+                        <li>Imutável e transparente</li>
+                        <li>Resistência à censura</li>
+                        <li>Interação ponto a ponto</li>
+                    </ul>
+                    <p><strong>Exemplos:</strong> Uniswap, OpenSea, Compound</p>
+                </div>
+            </div>
+
+            <div class="equation-box">
+                Qualquer “dApp” precisa de uma forma de se comunicar com a blockchain!
+            </div>
+        </div>
+
+        <!-- Slide 2: Estrutura da dApp -->
+        <div class="slide" id="slide2">
+            <h1>Estrutura e Componentes de uma dApp</h1>
+            
+            <div class="equation-box">
+                DAPP_Equação = I + II
+            </div>
+
+            <h2>Dois Lados da Equação</h2>
+            
+            <div class="two-column">
+                <div class="column">
+                    <h3>I: Desenvolvimento de Smart Contracts</h3>
+                    <ul>
+                        <li>Lógica de backend implantada na blockchain</li>
+                        <li>Escritos em Solidity/Vyper</li>
+                        <li>Imutáveis após o deploy</li>
+                        <li>Contratos autoexecutáveis</li>
+                        <li>Sem intermediários</li>
+                    </ul>
+                </div>
+                
+                <div class="column">
+                    <h3>II: Aplicação Cliente</h3>
+                    <ul>
+                        <li>Interface frontend (HTML/CSS/JavaScript)</li>
+                        <li>Interage com a blockchain</li>
+                        <li>Interface amigável ao usuário</li>
+                        <li>Integração com carteiras</li>
+                        <li>Tratamento de transações</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="architecture-diagram">
+                <h3>Fluxo de Arquitetura da dApp</h3>
+                <div style="margin: 20px 0;">
+                    <div class="component-box client-box">Interface do Usuário</div>
+                    <div class="flow-arrow">↔</div>
+                    <div class="component-box smart-contract-box">Smart Contract</div>
+                    <div class="flow-arrow">↔</div>
+                    <div class="component-box blockchain-box">Blockchain</div>
+                </div>
+                <p style="margin-top: 20px; font-style: italic;">
+                    Os smart contracts operam como APIs para a blockchain e armazenamento descentralizado, gerenciando interações com dados armazenados em blockchains e outros sistemas descentralizados.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Principais Benefícios:</h4>
+                <ul>
+                    <li><strong>Disponibilidade 24/7:</strong> Sem indisponibilidade por servidor central</li>
+                    <li><strong>Resistência à Censura:</strong> Sem controle de uma autoridade única</li>
+                    <li><strong>Acessibilidade Global:</strong> Disponível mundialmente</li>
+                    <li><strong>Dinheiro Programável:</strong> Operações financeiras automatizadas</li>
+                    <li><strong>Transparência:</strong> Todas as transações são públicas</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Fluxo de Comunicação -->
+        <div class="slide" id="slide3">
+            <h1>Como Sites se Comunicarem com a Blockchain</h1>
+            
+            <div class="flow-diagram">
+                <div class="flow-item">Linguagens de Programação</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">JSON-RPC (Habilitado por Web3.js)</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Cliente Ethereum</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">Rede Blockchain</div>
+            </div>
+
+            <h2>Plataformas de Acesso à dApp</h2>
+            
+            <div class="two-column">
+                <div class="column">
+                    <h4>Plataformas de Frontend</h4>
+                    <ul>
+                        <li>Sites (HTML/CSS/JavaScript)</li>
+                        <li>Aplicativos Mobile</li>
+                        <li>Aplicativos Desktop</li>
+                        <li>Extensões de Navegador</li>
+                    </ul>
+                </div>
+                
+                <div class="column">
+                    <h4>Linguagens de Programação</h4>
+                    <ul>
+                        <li>JavaScript (Mais comum)</li>
+                        <li>Python</li>
+                        <li>Java</li>
+                        <li>Go</li>
+                        <li>Rust</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="architecture-diagram">
+                <h3>Arquitetura Completa de Comunicação</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; margin: 20px 0;">
+                    <div style="text-align: center;">
+                        <div class="component-box client-box">Plataformas de Acesso à dApp</div>
+                        <div style="margin: 10px 0; font-size: 12px;">Site<br>App Mobile</div>
+                    </div>
+                    <div class="flow-arrow">↔</div>
+                    <div style="text-align: center;">
+                        <div class="component-box">Interface Web3.js</div>
+                        <div style="margin: 10px 0; font-size: 12px;">JSON-RPC</div>
+                    </div>
+                    <div class="flow-arrow">↔</div>
+                    <div style="text-align: center;">
+                        <div class="component-box smart-contract-box">Cliente EVM</div>
+                        <div style="margin: 10px 0; font-size: 12px;">Cópia Local da Blockchain</div>
+                    </div>
+                    <div class="flow-arrow">↔</div>
+                    <div style="text-align: center;">
+                        <div class="component-box blockchain-box">Rede Ethereum</div>
+                        <div style="margin: 10px 0; font-size: 12px;">Nós Distribuídos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Espaço para imagem do diagrama da dApp -->
+            <div class="image-container" style="text-align: center; margin: 30px 0; padding: 20px; background: #f8f9fa; border-radius: 15px; border: 2px solid #dee2e6;">
+                <h3>Estrutura Detalhada de uma dApp</h3>
+                <img src="DAPPComm.png" alt="Estrutura da dApp mostrando Plataformas de Acesso, Linguagens de Programação, Interface Web3.js e Rede Ethereum" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <p style="font-size: 12px; color: #666; margin-top: 10px; font-style: italic;">
+                    Arquitetura completa de dApp mostrando o fluxo desde os aplicativos cliente passando pelo Web3.js até a rede Ethereum
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 4: JSON-RPC -->
+        <div class="slide" id="slide4">
+            <h1>JSON-RPC e Provedores Web3</h1>
+            
+            <div class="highlight-box">
+                <h3>O que é JSON-RPC?</h3>
+                <p><strong>JSON-RPC (JavaScript Object Notation - Remote Procedure Call)</strong> é um protocolo de chamada de procedimento remoto, sem estado e leve, codificado em JSON, que permite a comunicação entre aplicações cliente e nós Ethereum.</p>
+            </div>
+
+            <h2>Detalhes do Protocolo JSON-RPC</h2>
+            
+            <div class="code-example">
+                <h4>Fluxo de Comunicação:</h4>
+                Linguagem de Programação → JSON-RPC (Habilitado por Web3.js) → Cliente Ethereum → Blockchain
+            </div>
+
+            <h3>Métodos JSON-RPC Comuns</h3>
+            
+            <div class="provider-grid">
+                <div class="provider-card">
+                    <h4>eth_getBalance</h4>
+                    <p>Obtém o saldo da conta em Wei</p>
+                </div>
+                <div class="provider-card">
+                    <h4>eth_sendTransaction</h4>
+                    <p>Envia transações para a rede</p>
+                </div>
+                <div class="provider-card">
+                    <h4>eth_call</h4>
+                    <p>Chama funções de smart contracts (somente leitura)</p>
+                </div>
+                <div class="provider-card">
+                    <h4>eth_getBlock</h4>
+                    <p>Obtém informações e dados de blocos</p>
+                </div>
+            </div>
+
+            <h2>Características Principais</h2>
+            <ul>
+                <li><strong>Protocolo sem Estado:</strong> Cada requisição é independente e autônoma</li>
+                <li><strong>Agnóstico à Linguagem:</strong> Funciona com JavaScript, Python e outras linguagens</li>
+                <li><strong>Padronizado:</strong> Nós Ethereum expõem métodos de API consistentes</li>
+                <li><strong>Flexível no Transporte:</strong> Funciona via HTTP, WebSocket e IPC</li>
+            </ul>
+        </div>
+
+        <!-- Web3 vs Ether.js-->
+        <div class="slide" id="slide5">
+            <h1>Web3.js vs Ethers.js</h1>
+            <a href="web3-vs-ethers-comparison.html" target="_blank"><strong>Web3.js vs Ethers.js</strong></a>
+        </div>
+
+        <!-- Slide 5: Provedores Web3.js -->
+        <div class="slide" id="slide5">
+            <h1>Sistema de Provedores do Web3.js</h1>
+            
+            <h2>Tipos de Provedores no Web3.js</h2>
+            
+            <div class="provider-grid">
+                <div class="provider-card">
+                    <h4>HttpProvider</h4>
+                    <p><strong>Conexão:</strong> HTTP para nós remotos (Infura, Alchemy)</p>
+                    <ul>
+                        <li>Melhor para operações de leitura</li>
+                        <li>Configuração simples</li>
+                        <li>Amplo suporte entre plataformas</li>
+                        <li>Maior latência que WebSocket</li>
+                    </ul>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>WebSocketProvider</h4>
+                    <p><strong>Conexão:</strong> Em tempo real com assinaturas de eventos</p>
+                    <ul>
+                        <li>Escuta de eventos em tempo real</li>
+                        <li>Operações com menor latência</li>
+                        <li>Conexão persistente</li>
+                        <li>Perfeito para dApps ao vivo</li>
+                    </ul>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>IpcProvider</h4>
+                    <p><strong>Conexão:</strong> IPC local para instâncias de nó</p>
+                    <ul>
+                        <li>Comunicação local direta</li>
+                        <li>Método de conexão mais rápido</li>
+                        <li>Requer nó da blockchain local</li>
+                        <li>Ideal para desenvolvimento</li>
+                    </ul>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>Provedores Personalizados</h4>
+                    <p><strong>Conexão:</strong> Extensível para necessidades especializadas</p>
+                    <ul>
+                        <li>Personalizável para redes específicas</li>
+                        <li>Integração com infraestrutura proprietária</li>
+                        <li>Opções avançadas de configuração</li>
+                        <li>Soluções corporativas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>Vantagens da Arquitetura Web3.js</h2>
+            
+            <div class="highlight-box">
+                <ul>
+                    <li><strong>Biblioteca Madura:</strong> Uma das primeiras e mais estabelecidas bibliotecas Ethereum</li>
+                    <li><strong>API Abrangente:</strong> Cobertura total dos métodos JSON-RPC do Ethereum</li>
+                    <li><strong>Grande Comunidade:</strong> Muitos tutoriais, documentação e suporte</li>
+                    <li><strong>Pronto para Produção:</strong> Usada por grandes dApps com confiabilidade comprovada</li>
+                    <li><strong>Abordagem de Instância Única:</strong> Uma instância web3 lida com operações de leitura e escrita</li>
+                    <li><strong>Utilitários Embutidos:</strong> Funções auxiliares abrangentes para operações comuns</li>
+                </ul>
+            </div>
+
+            <h2>Estrutura de Módulos do Web3.js</h2>
+            
+            <div class="web3-axes-diagram">
+                <!-- Caixa principal Web3.js -->
+                <div style="display: flex; justify-content: center; margin: 20px 0;">
+                    <div class="component-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 1.2em; padding: 20px 40px;">
+                        Web3.js
+                    </div>
+                </div>
+
+                <!-- Linha principal dos eixos -->
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+                    <div class="component-box" style="background: #2196f3; margin: 10px;">web3.eth</div>
+                    <div class="component-box" style="background: #2196f3; margin: 10px;">web3.utils</div>
+                    <div class="component-box" style="background: #2196f3; margin: 10px;">web3.contract</div>
+                    <div class="component-box" style="background: #2196f3; margin: 10px;">web3.net</div>
+                </div>
+
+                <!-- Linha opcional / avançada -->
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; margin: 20px 0;">
+                    <div class="component-box" style="background: #607d8b; margin: 10px; opacity: 0.8;">web3.personal</div>
+                    <div class="component-box" style="background: #607d8b; margin: 10px; opacity: 0.8;">web3.shh</div>
+                    <div class="component-box" style="background: #607d8b; margin: 10px; opacity: 0.8;">web3.bzz</div>
+                </div>
+            </div>
+
+            <div class="provider-grid" style="margin-top: 30px;">
+                <div class="provider-card">
+                    <h4>web3.eth</h4>
+                    <p><strong>Propósito:</strong> Operações na blockchain</p>
+                    <p><strong>Métodos:</strong> getAccounts(), getBalance(), sendTransaction(), getBlock(), events</p>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>web3.utils</h4>
+                    <p><strong>Propósito:</strong> Helpers / utilitários</p>
+                    <p><strong>Métodos:</strong> toWei(), fromWei(), isAddress(), randomHex(), sha3()</p>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>web3.contract</h4>
+                    <p><strong>Propósito:</strong> Interação com smart contracts</p>
+                    <p><strong>Métodos:</strong> new Contract(), deploy(), methods.call/send()</p>
+                </div>
+                
+                <div class="provider-card">
+                    <h4>web3.net</h4>
+                    <p><strong>Propósito:</strong> Informações da rede</p>
+                    <p><strong>Métodos:</strong> isListening(), getId(), getPeerCount()</p>
+                </div>
+                
+                <div class="provider-card" style="opacity: 0.7;">
+                    <h4>web3.personal</h4>
+                    <p><strong>Propósito:</strong> Gerenciamento de contas no nó local</p>
+                    <p><strong>Métodos:</strong> unlockAccount(), lockAccount()</p>
+                    <p><small><em>Avançado/Opcional</em></small></p>
+                </div>
+                
+                <div class="provider-card" style="opacity: 0.7;">
+                    <h4>web3.shh</h4>
+                    <p><strong>Propósito:</strong> Mensageria Whisper (experimental)</p>
+                    <p><strong>Métodos:</strong> post(), newMessage()</p>
+                    <p><small><em>Avançado/Opcional</em></small></p>
+                </div>
+                
+                <div class="provider-card" style="opacity: 0.7;">
+                    <h4>web3.bzz</h4>
+                    <p><strong>Propósito:</strong> Armazenamento de arquivos no Swarm</p>
+                    <p><strong>Métodos:</strong> upload(), download()</p>
+                    <p><small><em>Avançado/Opcional</em></small></p>
+                </div>
+            </div>
+
+            <h3>Prática Mão na Massa</h3>
+            
+            <div class="highlight-box">
+                <h4>Requisitos de Configuração:</h4>
+                <ul>
+                    <li><strong>Instalar o Ganache</strong> - Blockchain local para desenvolvimento</li>
+                    <li><strong>Instalar Web3.js</strong> - Biblioteca JavaScript para interação com blockchain</li>
+                    <li><strong>Infura</strong> - Crie uma conta Infura com seu e-mail pessoal</li>
+                </ul>
+                
+                <h4>Trabalhando com Exemplos de Código:</h4>
+                <ul>
+                    <li>Web3ProviderSepolia.js</li>
+                    <li>getBlockInfo.js</li>
+                    <li>utilsMethod.js</li>
+                    <li>getAccounts.js</li>
+                    <li>accTransactions.js</li>
+                    <li>getBalanceAccount.js</li>
+                    <li>create-accounts.js</li>
+                    <li>send-transaction.js</li>
+                    <li>...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSlide(slideId) {
+            document.getElementById(slideId).scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Adiciona IntersectionObserver para animações de slides
+        const slides = document.querySelectorAll('.slide');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = '0s';
+                    entry.target.style.animationFillMode = 'both';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Rolagem suave para melhor experiência do usuário
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>
