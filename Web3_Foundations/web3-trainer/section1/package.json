@@ -1,0 +1,16 @@
+{
+  "name": "section1",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bn.js": "^5.2.2",
+    "web3": "^4.16.0"
+  }
+}
